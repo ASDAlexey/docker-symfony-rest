@@ -1,0 +1,11 @@
+.idea/
+.env
+/configs/
+/src/
+.DS_Store
+nginx/configs/conf.d/*.conf
+nginx/ssl/*.cert
+nginx/ssl/*.key
+.htpasswd
+/openssl.cnf
+/symfony-rest-api.com.csr

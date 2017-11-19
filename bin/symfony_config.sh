@@ -14,4 +14,7 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
     jwt_key_pass_phrase: $JWT_KEY_PASS_PHRASE
+    product_image:
+      uri_prefix: /images/products/
+      upload_destination: '%kernel.root_dir%/../web/images/products'
 EOF

@@ -17,8 +17,9 @@ services:
     depends_on:
      - db
     volumes:
-     - ./src/symfony:/var/www/html/${APP_NAME}
-     - ./configs/parameters.yml:/var/www/html/${APP_NAME}/app/config/parameters.yml
+     - ./src/${PATH_SYMFONY_APP}:/var/www/html/${PATH_SYMFONY_APP}
+     - ./configs/parameters.yml:/var/www/html/${PATH_SYMFONY_APP}/app/config/parameters.yml
+#     - ./uploads/:/var/www/html/${PATH_SYMFONY_APP}/web/
   web-srv:
     build: ./docker-images/nginx
     ports:
@@ -27,6 +28,7 @@ services:
      - ./nginx/configs/conf.d/:/etc/nginx/conf.d/
      - ./nginx/configs/nginx.conf:/etc/nginx/nginx.conf
      - ./nginx/configs/.htpasswd:/etc/nginx/.htpasswd
-#     - ./nginx/ssl/:/etc/nginx/ssl/
+     - ./nginx/ssl/:/etc/nginx/ssl/
+     - ./src/${PATH_SYMFONY_APP}:/var/www/html/${PATH_SYMFONY_APP}/
     volumes_from:
      - app

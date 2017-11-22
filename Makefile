@@ -2,28 +2,27 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-docker-env: clone nginx-config symfony-parameters up composer-install status
-docker-env-dev: clone nginx-config ssl symfony-parameters up composer-install status
+docker-env: clone httpauth nginx-config ssl symfony-parameters up composer-install status hosts
 
 dialog:
-	@. ./dialog.sh
+	@. ./bin/dialog.sh
 
 nginx-config:
 	@. ./bin/nginx-config.sh
 
-ssl:
-	@. ./bin/openssl.sh
-	@openssl genrsa -out nginx/ssl/${SERVER_NAME}.key 2048
-	@openssl req -new -out ${SERVER_NAME}.csr -key nginx/ssl/${SERVER_NAME}.key -config openssl.cnf -subj /C=RU/ST=Rostov/L=Taganrog/OU=DevOps/CN=${SERVER_NAME}
-	@openssl x509 -req -days 3650 -in ${SERVER_NAME}.csr -signkey nginx/ssl/${SERVER_NAME}.key -out nginx/ssl/${SERVER_NAME}.cert -extensions v3_req -extfile openssl.cnf
+httpauth:
+	@. ./bin/httpauth.sh
 
+ssl:
+	@bash ./bin/openssl.sh
 
 symfony-parameters:
 	@. ./bin/symfony_config.sh
 
 clone:
+	@if cd src 2> /dev/null; then echo "src folder exist."; else mkdir src; fi
 	@echo "\n\033[1;m Cloning App (${BRANCH_NAME} branch) \033[0m"
-	@if cd src 2> /dev/null; then git pull; else git clone -b ${BRANCH_NAME} ${GIT_URL} src/symfony; fi
+	@if cd src/${PATH_SYMFONY_APP} 2> /dev/null; then git pull origin ${BRANCH_NAME}; else git clone -b ${BRANCH_NAME} ${GIT_SYMFONY_APP} src/${PATH_SYMFONY_APP}; fi
 
 pull:
 	@$(MAKE) --no-print-directory clone
@@ -41,7 +40,7 @@ up:
 hosts:
 	@echo "\n\033[1;m Adding record in to your local /etc/hosts file.\033[0m"
 	@echo "\n\033[1;m Please use your local sudo password.\033[0m"
-	@echo '127.0.0.1 localhost '${SERVER_NAME}' www.'${SERVER_NAME}''| sudo tee -a /etc/hosts
+	@echo '127.0.0.1 localhost '${URL_SYMFONY_APP}' www.'${URL_SYMFONY_APP}''| sudo tee -a /etc/hosts
 
 stop:
 	@echo "\n\033[1;m  Halting containers... \033[0m"
@@ -55,8 +54,8 @@ restart:
 	@$(MAKE) --no-print-directory status
 
 cache-clear:
-	@docker-compose exec app bash -c "cd /var/www/html/${APP_NAME}/ && php ./bin/console cache:clear --env=prod"
-	@docker-compose exec app bash -c "cd /var/www/html/${APP_NAME}/ && php ./bin/console cache:clear"
+	@docker-compose exec app bash -c "cd /var/www/html/${PATH_SYMFONY_APP}/ && php ./bin/console cache:clear --env=prod"
+	@docker-compose exec app bash -c "cd /var/www/html/${PATH_SYMFONY_APP}/ && php ./bin/console cache:clear"
 
 status:
 	@echo "\n\033[1;m Containers statuses \033[0m"
@@ -79,15 +78,19 @@ console-nginx:
 	@docker-compose exec web-srv bash
 
 composer-install:
-	@docker-compose exec app bash -c "cd /var/www/html/${APP_NAME}/ && composer install"
+	@docker-compose exec app bash -c "cd /var/www/html/${PATH_SYMFONY_APP}/ && composer install"
 	@$(MAKE) --no-print-directory permissions
 
 permissions:
-	@docker-compose exec app bash -c "chmod -R 755 /var/www/html/${APP_NAME}/var/cache /var/www/html/${APP_NAME}/var/logs"
-	@docker-compose exec app bash -c "chown -R www-data:www-data /var/www/html/${APP_NAME}/var/cache /var/www/html/${APP_NAME}/var/logs"
+	@docker-compose exec app bash -c "chmod -R 755 /var/www/html/${PATH_SYMFONY_APP}/var/cache /var/www/html/${PATH_SYMFONY_APP}/var/logs"
+	@docker-compose exec app bash -c "chown -R www-data:www-data /var/www/html/${PATH_SYMFONY_APP}/var/cache /var/www/html/${PATH_SYMFONY_APP}/var/logs"
 
 schema-update:
-	@docker-compose exec app bash -c "cd /var/www/html/${APP_NAME}/ && php bin/console doctrine:schema:update --force"
+	@docker-compose exec app bash -c "cd /var/www/html/${PATH_SYMFONY_APP}/ && php bin/console doctrine:schema:update --force"
+
+migration:
+	@docker-compose exec app bash -c "cd /var/www/html/${PATH_SYMFONY_APP}/ && php bin/console doctrine:migrations:migrate"
+
 
 logs-nginx:
 	@docker-compose logs --tail=100 -f web-srv

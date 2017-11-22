@@ -29,8 +29,8 @@ keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = $URL_REACT_APP
-DNS.2 = $URL_NODE
+DNS.1 = $URL_SYMFONY_APP
+DNS.2 = $URL_FRONTEND
 EOF
 # DNS.2 = $ASSETS_DOMAIN
 

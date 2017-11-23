@@ -6,7 +6,7 @@ else
 
 COMMON_NAME1=${2:-*.$URL_REACT_APP}
 #COMMON_NAME2=${2:-*.$ASSETS_DOMAIN}
-SUBJECT1="/C=US/ST=NY/L=NewYork/O=DockerSymfonyRest/OU=DockerSymfonyRest/CN=$COMMON_NAME1"
+SUBJECT1="/C=US/ST=NY/L=NewYork/O=Goodsearch/OU=GodblessDevOps/CN=$COMMON_NAME1"
 #SUBJECT2="/C=US/ST=NY/L=NewYork/O=Goodsearch/OU=GodblessDevOps/CN=$COMMON_NAME2"
 
 mkdir -p ./nginx/ssl
@@ -29,8 +29,8 @@ keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = $URL_SYMFONY_APP
-DNS.2 = $URL_FRONTEND
+DNS.1 = $URL_ANGULAR
+DNS.2 = $URL_SYMFONY_APP
 EOF
 # DNS.2 = $ASSETS_DOMAIN
 

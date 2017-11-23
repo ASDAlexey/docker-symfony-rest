@@ -4,6 +4,11 @@ export $(shell sed 's/=.*//' .env)
 
 docker-env: clone httpauth nginx-config ssl symfony-parameters up composer-install status hosts
 
+db-import:
+	@docker-compose exec db bash -c "mysql -uroot --password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} < /docker-entrypoint-initdb.d/${MYSQL_DATABASE}.sql"
+db-export:
+	@docker-compose exec db bash -c "mysqldump -uroot --password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} > /docker-entrypoint-initdb.d/${MYSQL_DATABASE}.sql"
+
 dialog:
 	@. ./bin/dialog.sh
 

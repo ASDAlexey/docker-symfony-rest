@@ -19,7 +19,6 @@ services:
     volumes:
      - ./src/${PATH_SYMFONY_APP}:/var/www/html/${PATH_SYMFONY_APP}
      - ./configs/parameters.yml:/var/www/html/${PATH_SYMFONY_APP}/app/config/parameters.yml
-#     - ./uploads/:/var/www/html/${PATH_SYMFONY_APP}/web/
   web-srv:
     build: ./docker-images/nginx
     ports:

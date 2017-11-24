@@ -1,7 +1,11 @@
 #!/bin/bash
 mkdir -p nginx/configs/conf.d
 
-ANGULAR_ROOT_PATH=/var/www/html/$PATH_ANGULAR/dist
+ANGULAR_ROOT_PATH="$(if [ $ENV = "local" ]; then
+			    echo "/var/www/html/$PATH_ANGULAR/dist"
+            else
+                echo "/var/www/html/$PATH_ANGULAR"
+			fi;)"
 
 cat <<EOF > nginx/configs/conf.d/$URL_ANGULAR.conf
 server {

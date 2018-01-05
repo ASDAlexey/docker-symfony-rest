@@ -14,8 +14,8 @@ server {
     ssl_certificate /etc/nginx/ssl/server.cert;
     ssl_certificate_key /etc/nginx/ssl/server.key;
 
-    auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/.htpasswd;
+    # auth_basic "Restricted";
+    # auth_basic_user_file /etc/nginx/.htpasswd;
 
     root '${ANGULAR_ROOT_PATH}';
     server_name $URL_ANGULAR www.$URL_ANGULAR;
@@ -61,8 +61,8 @@ server {
     ssl_certificate /etc/nginx/ssl/server.cert;
     ssl_certificate_key /etc/nginx/ssl/server.key;
 
-    #auth_basic "Restricted";
-    #auth_basic_user_file /etc/nginx/.htpasswd;
+    # auth_basic "Restricted";
+    # auth_basic_user_file /etc/nginx/.htpasswd;
 
     if (\$scheme = http) {
       return 301 https://$URL_SYMFONY_APP\$request_uri;

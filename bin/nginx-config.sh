@@ -10,9 +10,9 @@ ANGULAR_ROOT_PATH="$(if [ $ENV = "local" ]; then
 cat <<EOF > nginx/configs/conf.d/$URL_ANGULAR.conf
 server {
     listen 80;
-    listen 443 ssl;
-    ssl_certificate /etc/nginx/ssl/server.cert;
-    ssl_certificate_key /etc/nginx/ssl/server.key;
+    # listen 443 ssl;
+    # ssl_certificate /etc/nginx/ssl/server.cert;
+    # ssl_certificate_key /etc/nginx/ssl/server.key;
 
     # auth_basic "Restricted";
     # auth_basic_user_file /etc/nginx/.htpasswd;
@@ -20,13 +20,13 @@ server {
     root '${ANGULAR_ROOT_PATH}';
     server_name $URL_ANGULAR www.$URL_ANGULAR;
 
-    if (\$scheme = http) {
-       return 301 https://$URL_ANGULAR\$request_uri;
-    }
+    # if (\$scheme = http) {
+    #   return 301 https://$URL_ANGULAR\$request_uri;
+    # }
 
-    if (\$host ~* www\.(.*)) {
-        return 301 https://\$server_name\$request_uri;
-    }
+    # if (\$host ~* www\.(.*)) {
+    #    return 301 https://\$server_name\$request_uri;
+    # }
 
     # SSL cache
     ssl_session_cache shared:SSL:10m;
@@ -57,20 +57,20 @@ EOF
 cat <<EOF > nginx/configs/conf.d/$URL_SYMFONY_APP.conf
 server {
     listen 80;
-    listen 443 ssl;
-    ssl_certificate /etc/nginx/ssl/server.cert;
-    ssl_certificate_key /etc/nginx/ssl/server.key;
+    # listen 443 ssl;
+#    ssl_certificate /etc/nginx/ssl/server.cert;
+#    ssl_certificate_key /etc/nginx/ssl/server.key;
 
     # auth_basic "Restricted";
     # auth_basic_user_file /etc/nginx/.htpasswd;
 
-    if (\$scheme = http) {
-      return 301 https://$URL_SYMFONY_APP\$request_uri;
-    }
+#    if (\$scheme = http) {
+#      return 301 https://$URL_SYMFONY_APP\$request_uri;
+#    }
 
-    if (\$host ~* www\.(.*)) {
-        return 301 http://\$server_name\$request_uri;
-    }
+#    if (\$host ~* www\.(.*)) {
+#        return 301 http://\$server_name\$request_uri;
+#    }
 
     server_name $URL_SYMFONY_APP www.$URL_SYMFONY_APP;
     root /var/www/html/$PATH_SYMFONY_APP/web;
